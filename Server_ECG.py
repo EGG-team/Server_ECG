@@ -7,6 +7,7 @@ app = Flask(__name__)
 def hello_world():
     return render_template('index.html')
 
+
 @app.route('/simple_chart')
 def chart():
     values = [0,1,2,3,4,5,6,7,8,9]
