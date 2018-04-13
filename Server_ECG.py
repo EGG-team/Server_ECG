@@ -1,17 +1,15 @@
-from flask import Flask, render_template
+from flask import Flask, Markup, render_template
+from datetime import time
 
 app = Flask(__name__)
 
 
-@app.route('/')
-def hello_world():
-    return render_template('index.html')
-
-
-@app.route('/simple_chart')
+@app.route("/")
 def chart():
-    values = [0,1,2,3,4,5,6,7,8,9]
-    return render_template('chart.html', values = values)
+    times = ['','','','','','','','','']
+
+    values = [10,9,8,7,6,4,7,8]
+    return render_template('chart.html', values=values, labels=times)
 
 
 if __name__ == '__main__':
