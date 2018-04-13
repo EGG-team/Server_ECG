@@ -4,7 +4,13 @@ from datetime import time
 app = Flask(__name__)
 
 
-@app.route("/")
+@app.route('/')
+@app.route('/index')
+def hello_world():
+    return render_template('index.html')
+
+
+@app.route('/chart')
 def chart():
     times = ['','','','','','','','','']
 
