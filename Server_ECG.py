@@ -18,10 +18,8 @@ def hello_world():
 
 @app.route('/chart')
 def chart():
-    times = ['','','','','','','','','']
-
-    values = [10,9,8,7,6,4,7,8]
-    return render_template('chart.html', values=values, labels=times)
+    values = [(0,1),(4,2),(8,1.8),(17,2.2)]
+    return render_template('chart.html', values=values)
 
 
 @app.route('/login', methods=['GET', 'POST'])
