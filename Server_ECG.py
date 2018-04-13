@@ -1,5 +1,4 @@
-from flask import Flask, Markup, render_template, flash, redirect
-from datetime import time
+from flask import Flask, render_template, flash, redirect
 from forms import LoginForm
 
 
@@ -12,8 +11,9 @@ app.config.update(dict(
 
 @app.route('/')
 @app.route('/index')
-def hello_world():
-    return render_template('index.html')
+def index():
+    user = {'username': 'Ivan'}
+    return render_template('index.html', user=user)
 
 
 @app.route('/chart')
@@ -28,14 +28,12 @@ def chart():
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-        flash(
-            'Login requested for username="{0}", password="{1}", '
-            'remember_me={2}'.format(
-                form.username.data, form.password.data, form.remember_me.data
-            )
+        flash('Login requested for user {0}, remember_me={1}'.format(
+            form.username.data, form.remember_me.data)
         )
         return redirect('/index')
-    return render_template('login.html', title='Sign In', form=form)
+
+    return render_template('login.html', title='Sign in', form=form)
 
 
 if __name__ == '__main__':
