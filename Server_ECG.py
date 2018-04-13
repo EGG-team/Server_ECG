@@ -1,5 +1,7 @@
-from flask import Flask, render_template, flash, redirect
+from flask import Flask, Markup, render_template, flash, redirect
+from datetime import time
 from forms import LoginForm
+
 
 app = Flask(__name__)
 app.config.update(dict(
@@ -14,10 +16,12 @@ def hello_world():
     return render_template('index.html')
 
 
-@app.route('/simple_chart')
+@app.route('/chart')
 def chart():
-    values = [0,1,2,3,4,5,6,7,8,9]
-    return render_template('chart.html', values = values)
+    times = ['','','','','','','','','']
+
+    values = [10,9,8,7,6,4,7,8]
+    return render_template('chart.html', values=values, labels=times)
 
 
 @app.route('/login', methods=['GET', 'POST'])
