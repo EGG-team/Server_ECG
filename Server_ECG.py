@@ -18,7 +18,7 @@ def hello_world():
 
 @app.route('/chart')
 def chart():
-    values = [(0,1),(4,2),(8,1.8),(17,2.2)]
+    values = [(0,1),(20,1.5),(40,2),(700,1),(800,1.8),(1200,1),(5500, 1.2),(11000,0.5),(17000,2.2)]
     return render_template('chart.html', values=values)
 
 
