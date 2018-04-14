@@ -4,7 +4,8 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager, current_user, login_user, logout_user, \
     login_required
-from werkzeug.security import generate_password_hash
+from flask_sslify import SSLify
+import math
 
 
 app = Flask(__name__)
@@ -16,6 +17,8 @@ app.config.update(
         SQLALCHEMY_DATABASE_URI="mysql+mysqlconnector://{0}:{1}@{2}:{3}/{4}".format('root', 'myivan', 'localhost', '3306', 'ecg_db')
     )
 )
+# sslify = SSLify(app)
+
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
@@ -81,9 +84,16 @@ def profile(id):
         abort(403)
     user = models.User.query.filter_by(id=id).first_or_404()
 
-    query = db.session.query(models.EcgDate).filter_by(user_id=user.id).all()[-1]
-    data = query.data
-    values = list(zip(data.split()[::2], data.split()[1::2]))
+    query = db.session.query(models.EcgDate).filter_by(user_id=user.id).all()
+    if query:
+        query = query[-1]
+        data = query.data
+        xs = data.split()[::2]
+        ys = list(map(int, data.split()[1::2]))
+        ys = list(map(lambda y: math.log(y - 1000) - 1, ys))
+        values = list(zip(xs, ys))
+    else:
+        values = []
     return render_template('chart.html', values=values)
 
 
@@ -95,6 +105,7 @@ def get_user():
 @app.route('/api/v1.0/users', methods=['POST'])
 def create_user():
     # print(request.json)
+    # TODO login from api
     if not request.json or 'name' not in request.json:
         abort(400)
     worker = DbWorker()
