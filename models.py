@@ -25,7 +25,3 @@ class EcgDate(db.Model):
 
     def __repr__(self):
         return '<EcgData {}>'.format(self.data)
-
-    def add_data(self, data, user_id):
-        self.data = data
-        self.user_id = user_id
