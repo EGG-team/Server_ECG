@@ -1,6 +1,7 @@
-from flask_app import db
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
+
+from app import db, login_manager
 
 
 class User(db.Model, UserMixin):
@@ -16,6 +17,11 @@ class User(db.Model, UserMixin):
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(user_id)
 
 
 class EcgDate(db.Model):
