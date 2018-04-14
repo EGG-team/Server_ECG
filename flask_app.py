@@ -5,6 +5,7 @@ from flask_migrate import Migrate
 from flask_login import LoginManager, current_user, login_user, logout_user, \
     login_required
 from flask_sslify import SSLify
+import math
 
 
 app = Flask(__name__)
@@ -16,7 +17,7 @@ app.config.update(
         SQLALCHEMY_DATABASE_URI="mysql+mysqlconnector://{0}:{1}@{2}:{3}/{4}".format('root', 'myivan', 'localhost', '3306', 'ecg_db')
     )
 )
-sslify = SSLify(app)
+# sslify = SSLify(app)
 
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
@@ -87,7 +88,10 @@ def profile(id):
     if query:
         query = query[-1]
         data = query.data
-        values = list(zip(data.split()[::2], data.split()[1::2]))
+        xs = data.split()[::2]
+        ys = list(map(int, data.split()[1::2]))
+        ys = list(map(lambda y: math.log(y - 1000) - 1, ys))
+        values = list(zip(xs, ys))
     else:
         values = []
     return render_template('chart.html', values=values)
