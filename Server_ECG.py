@@ -2,8 +2,8 @@ from flask import Flask, render_template, flash, redirect
 from forms import LoginForm
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-from flask_login import LoginManager, current_user, login_user
-from models import User
+from flask_login import LoginManager, current_user, login_user, logout_user
+import models
 
 
 app = Flask(__name__)
@@ -18,14 +18,14 @@ app.config.update(
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
-login = LoginManager(app)
+login_manager = LoginManager(app)
+login_manager.login_view = 'login'
 
 
 @app.route('/')
 @app.route('/index')
 def index():
-    user = {'username': 'Ivan'}
-    return render_template('index.html', user=user)
+    return render_template('index.html', title='Home Page')
 
 
 @app.route('/chart')
@@ -42,7 +42,7 @@ def login():
         return redirect('/index')
     form = LoginForm()
     if form.validate_on_submit():
-        user = User.query.filter_by(username=form.username.data).first()
+        user = models.User.query.filter_by(email=form.username.data).first()
         if user is None or not user.check_password(form.password.data):
             flash('Invalid username or password')
             return redirect('/index')
@@ -50,6 +50,12 @@ def login():
         return redirect('/index')
 
     return render_template('login.html', title='Sign in', form=form)
+
+
+@app.route('/loguot')
+def logout():
+    logout_user()
+    return redirect('/index')
 
 
 if __name__ == '__main__':
