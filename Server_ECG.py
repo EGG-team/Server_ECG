@@ -30,10 +30,8 @@ def index():
 
 @app.route('/chart')
 def chart():
-    times = ['','','','','','','','','']
-
-    values = [10,9,8,7,6,4,7,8]
-    return render_template('chart.html', values=values, labels=times)
+    values = [(0,1),(20,1.5),(40,2),(700,1),(800,1.8),(1200,1),(5500, 1.2),(11000,0.5),(17000,2.2)]
+    return render_template('chart.html', values=values)
 
 
 @app.route('/login', methods=['GET', 'POST'])
