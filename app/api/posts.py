@@ -36,6 +36,10 @@ def add_ecg_data():
     values = list(zip(xs, ys))
     '''
 
+    params = request.args.to_dict()
+    if 'is_danger' in params.keys():
+        print('is_danger', params['is_danger'])
+
     db.session.add(
         EcgDate(
             data=request.json['data'],

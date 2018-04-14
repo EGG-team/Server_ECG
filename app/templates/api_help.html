@@ -3,7 +3,16 @@
 {% block content %}
     <div id = "container">
         <p> <h1 align = "center">Документация API</h1>
-        <p> <h4>тут про пост</h4>
-        <p> <h4>пример</h4>
+        <p> <h4><b>[POST]</b> <i>http://egg.pythonanywhere.com/api/v1.0/ecg_data</i> - служит для отправки
+            данных экг за некий промежуток времени на сервер.</h4>
+            <h4><b> Параметры:</b>
+            <h4>data - string - строка со значениями экг и метками времени (дельтой) в
+                чередующимся порядке через пробел</h4>
+            <h4>email - string - строка с email пользователя</h4>
+            <h4>password - string - пароль пользователя</h4>
+            <h4><b> Пример:</b></h4>
+            <h4> {"data": "0 15 47 132 1560 3200", "email": "test@test.ru", "password": "123123"}</h4>
+            <h4> Можно использовать экстренный режим, указав в url параметр 'is_danger'=true</h4>
+            <h4> Пример: http://localhost:5000/api/v1.0/ecg_data?is_danger=true</h4>
     </div>
 {% endblock %}
