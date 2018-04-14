@@ -1,8 +1,9 @@
-from flask import Flask, render_template, flash, redirect
+from flask import Flask, render_template, flash, redirect, abort
 
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-from flask_login import LoginManager, current_user, login_user, logout_user
+from flask_login import LoginManager, current_user, login_user, logout_user, \
+    login_required
 
 
 app = Flask(__name__)
@@ -11,7 +12,7 @@ app.config.update(
         SECRET_KEY="powerful-secretkey",
         WTF_CSRF_SECRET_KEY="a-csrf-secret-key",
         SQLALCHEMY_TRACK_MODIFICATIONS=False,
-        SQLALCHEMY_DATABASE_URI="mysql+mysqlconnector://{0}:{1}@{2}:{3}/{4}".format('user', 'password', 'host', 'port', 'db_name')
+        SQLALCHEMY_DATABASE_URI="mysql+mysqlconnector://{0}:{1}@{2}:{3}/{4}".format('root', 'myivan', 'localhost', '3306', 'ecg_db')
     )
 )
 db = SQLAlchemy(app)
@@ -76,6 +77,15 @@ def register():
         flash('Congratulations, you are now a registered user!')
         return redirect('/login')
     return render_template('register.html', title='Register', form=form)
+
+
+@app.route('/user/<int:id>')
+@login_required
+def profile(id):
+    if current_user.id != id:
+        abort(403)
+    user = models.User.query.filter_by(id=id).first_or_404()
+    return render_template('chart.html', user=user)
 
 
 if __name__ == '__main__':
