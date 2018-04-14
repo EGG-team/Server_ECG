@@ -50,7 +50,7 @@ def login():
     return render_template('login.html', title='Sign in', form=form)
 
 
-@app.route('/loguot')
+@app.route('/logout')
 def logout():
     logout_user()
     return redirect('/index')
