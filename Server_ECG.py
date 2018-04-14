@@ -1,12 +1,20 @@
 from flask import Flask, render_template, flash, redirect
 from forms import LoginForm
+from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 
 
 app = Flask(__name__)
-app.config.update(dict(
-    SECRET_KEY="powerful-secretkey",
-    WTF_CSRF_SECRET_KEY="a-csrf-secret-key"
-))
+app.config.update(
+    dict(
+        SECRET_KEY="powerful-secretkey",
+        WTF_CSRF_SECRET_KEY="a-csrf-secret-key",
+        SQLALCHEMY_TRACK_MODIFICATIONS=False,
+        SQLALCHEMY_DATABASE_URI="mysql+mysqlconnector://root:myivan@localhost/ecg_db"
+    )
+)
+db = SQLAlchemy(app)
+migrate = Migrate(app, db)
 
 
 @app.route('/')

@@ -3,4 +3,7 @@
 ## venv 
 - Flask
 - Flask-WTF
-- PyMySQL
+- pymysql
+- flask-login
+- flask-sqlalchemy
+- flask-migrate
