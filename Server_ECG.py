@@ -12,7 +12,7 @@ app.config.update(
         SECRET_KEY="powerful-secretkey",
         WTF_CSRF_SECRET_KEY="a-csrf-secret-key",
         SQLALCHEMY_TRACK_MODIFICATIONS=False,
-        SQLALCHEMY_DATABASE_URI="mysql+mysqlconnector://root:myivan@localhost/ecg_db"
+        SQLALCHEMY_DATABASE_URI="mysql+mysqlconnector://root:myivan@localhost:3306/ecg_db"
     )
 )
 db = SQLAlchemy(app)
