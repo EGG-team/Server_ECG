@@ -1,5 +1,5 @@
 from flask import Flask, render_template, flash, redirect
-from forms import LoginForm
+import forms
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager, current_user, login_user, logout_user
@@ -40,7 +40,7 @@ def chart():
 def login():
     if current_user.is_authenticated:
         return redirect('/index')
-    form = LoginForm()
+    form = forms.LoginForm()
     if form.validate_on_submit():
         user = models.User.query.filter_by(email=form.username.data).first()
         if user is None or not user.check_password(form.password.data):
@@ -57,6 +57,20 @@ def logout():
     logout_user()
     return redirect('/index')
 
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if current_user.is_authenticated:
+        return redirect('/index')
+    form = forms.RegistrationForm()
+    if form.validate_on_submit():
+        user = models.User(email=form.email.data)
+        user.set_password(form.password.data)
+        db.session.add(user)
+        db.session.commit()
+        flash('Congratulations, you are now a registered user!')
+        return redirect('/login')
+    return render_template('register.html', title='Register', form=form)
 
 if __name__ == '__main__':
     app.run()
