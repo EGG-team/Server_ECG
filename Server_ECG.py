@@ -81,9 +81,13 @@ def profile(id):
         abort(403)
     user = models.User.query.filter_by(id=id).first_or_404()
 
-    query = db.session.query(models.EcgDate).filter_by(user_id=user.id).all()[-1]
-    data = query.data
-    values = list(zip(data.split()[::2], data.split()[1::2]))
+    query = db.session.query(models.EcgDate).filter_by(user_id=user.id).all()
+    if not query:
+        query = query[-1]
+        data = query.data
+        values = list(zip(data.split()[::2], data.split()[1::2]))
+    else:
+        values = []
     return render_template('chart.html', values=values)
 
 
@@ -95,6 +99,7 @@ def get_user():
 @app.route('/api/v1.0/users', methods=['POST'])
 def create_user():
     # print(request.json)
+    # TODO login from api
     if not request.json or 'name' not in request.json:
         abort(400)
     worker = DbWorker()
