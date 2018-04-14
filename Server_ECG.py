@@ -1,9 +1,10 @@
-from flask import Flask, render_template, flash, redirect, abort
-
+from flask import Flask, render_template, flash, redirect, jsonify, abort, \
+    request
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager, current_user, login_user, logout_user, \
     login_required
+from werkzeug.security import generate_password_hash
 
 
 app = Flask(__name__)
@@ -34,12 +35,6 @@ def load_user(user_id):
 @app.route('/index')
 def index():
     return render_template('index.html', title='Home Page')
-
-
-@app.route('/chart')
-def chart():
-    values = [(0,1),(20,1.5),(40,2),(700,1),(800,1.8),(1200,1),(5500, 1.2),(11000,0.5),(17000,2.2)]
-    return render_template('chart.html', values=values)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -85,7 +80,47 @@ def profile(id):
     if current_user.id != id:
         abort(403)
     user = models.User.query.filter_by(id=id).first_or_404()
-    return render_template('chart.html', user=user)
+
+    query = db.session.query(models.EcgDate).filter_by(user_id=user.id).all()[-1]
+    data = query.data
+    values = list(zip(data.split()[::2], data.split()[1::2]))
+    return render_template('chart.html', values=values)
+
+
+@app.route('/api/v1.0/ecg_data', methods=['GET'])
+def get_user():
+    return jsonify({'user': 'pidor'})
+
+
+@app.route('/api/v1.0/users', methods=['POST'])
+def create_user():
+    # print(request.json)
+    if not request.json or 'name' not in request.json:
+        abort(400)
+    worker = DbWorker()
+    new_user = worker.add_new_user(request.json['name'],
+                                   request.json.get('description', None))
+    return jsonify({'user': new_user}), 201
+
+
+@app.route('/api/v1.0/ecg_data', methods=['POST'])
+def add_ecg_data():
+    if not request.json or 'data' not in request.json or \
+            'email' not in request.json or \
+            'password' not in request.json:
+        abort(400)
+    user = db.session.query(models.User).filter_by(
+        email=request.json['email']).one()
+    if not user.check_password(request.json['password']):
+        abort(401)
+    db.session.add(
+        models.EcgDate(
+            data=request.json['data'],
+            user_id=user.id
+        )
+    )
+    db.session.commit()
+    return "OK", 201
 
 
 if __name__ == '__main__':
