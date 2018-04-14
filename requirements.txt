@@ -4,3 +4,4 @@ pymysql
 flask-login
 flask-sqlalchemy
 flask-migrate
+mysql-connector-python
