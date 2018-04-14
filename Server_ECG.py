@@ -1,9 +1,8 @@
 from flask import Flask, render_template, flash, redirect
-import forms
+
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager, current_user, login_user, logout_user
-import models
 
 
 app = Flask(__name__)
@@ -12,7 +11,7 @@ app.config.update(
         SECRET_KEY="powerful-secretkey",
         WTF_CSRF_SECRET_KEY="a-csrf-secret-key",
         SQLALCHEMY_TRACK_MODIFICATIONS=False,
-        SQLALCHEMY_DATABASE_URI="mysql+mysqlconnector://root:myivan@localhost/ecg_db"
+        SQLALCHEMY_DATABASE_URI="mysql+mysqlconnector://{0}:{1}@{2}:{3}/{4}".format('user', 'password', 'host', 'port', 'db_name')
     )
 )
 db = SQLAlchemy(app)
@@ -20,6 +19,14 @@ migrate = Migrate(app, db)
 
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
+
+import models
+import forms
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    return models.User.query.get(user_id)
 
 
 @app.route('/')
@@ -69,6 +76,7 @@ def register():
         flash('Congratulations, you are now a registered user!')
         return redirect('/login')
     return render_template('register.html', title='Register', form=form)
+
 
 if __name__ == '__main__':
     app.run()
