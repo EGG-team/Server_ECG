@@ -5,12 +5,13 @@
 {% endblock %}
 
 {% block content %}
+<canvas id = "canvas"></canvas>
+
 <script>
-    var canvas = document.createElement('canvas');
-    canvas.width = 1200;
+    var canvas = document.getElementById('canvas');
+    canvas.width = 800;
     canvas.height = 400;
 
-    document.body.appendChild(canvas);
 
     var data = {
         datasets: [
