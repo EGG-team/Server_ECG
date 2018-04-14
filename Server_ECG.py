@@ -1,5 +1,4 @@
 from flask import Flask, render_template, flash, redirect, abort
-
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager, current_user, login_user, logout_user, \
@@ -34,12 +33,6 @@ def load_user(user_id):
 @app.route('/index')
 def index():
     return render_template('index.html', title='Home Page')
-
-
-@app.route('/chart')
-def chart():
-    values = [(0,1),(20,1.5),(40,2),(700,1),(800,1.8),(1200,1),(5500, 1.2),(11000,0.5),(17000,2.2)]
-    return render_template('chart.html', values=values)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -85,7 +78,11 @@ def profile(id):
     if current_user.id != id:
         abort(403)
     user = models.User.query.filter_by(id=id).first_or_404()
-    return render_template('chart.html', user=user)
+
+    query = db.session.query(models.EcgDate).filter_by(user_id=user.id).one()
+    data = query.data
+    values = list(zip(data.split()[::2], data.split()[1::2]))
+    return render_template('chart.html', values=values)
 
 
 if __name__ == '__main__':

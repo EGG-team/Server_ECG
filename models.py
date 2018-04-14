@@ -1,4 +1,4 @@
-from Server_ECG import db, login_manager
+from Server_ECG import db
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -16,3 +16,16 @@ class User(db.Model, UserMixin):
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
+
+
+class EcgDate(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    data = db.Column(db.TEXT)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+
+    def __repr__(self):
+        return '<EcgData {}>'.format(self.data)
+
+    def add_data(self, data, user_id):
+        self.data = data
+        self.user_id = user_id
