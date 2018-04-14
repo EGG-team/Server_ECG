@@ -21,7 +21,10 @@
                 data: [{% for item1, item2 in values %}
                       {x:{{item1}},
                       y:{{item2}}},
-                    {% endfor %}]
+                    {% endfor %}],
+                pointRadius: 0,
+                borderWidth: 1,
+                fill: false
             }
         ]
     };
