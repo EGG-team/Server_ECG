@@ -5,13 +5,14 @@
 {% endblock %}
 
 {% block content %}
-<canvas id = "canvas"></canvas>
-
+<div id = "container">
+    <canvas id = "canvas" height="400" width="8000"></canvas>
+</div>
 <script>
     var canvas = document.getElementById('canvas');
-    canvas.width = 800;
-    canvas.height = 400;
 
+    var context = canvas.getContext('2d');
+    context.textAlign = 'center';
 
     var data = {
         datasets: [
@@ -47,8 +48,8 @@
                 xAxes: [{
                     ticks: {
                       min: 0,
-    //                  stepSize: 1,
-                      max: 20000
+                      stepSize: 1,
+                      max: 200000
                     },
                     type: 'linear',
                     position: 'bottom',
