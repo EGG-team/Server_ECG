@@ -4,6 +4,7 @@ from flask_login import LoginManager
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from flask_sslify import SSLify
+from flask_bootstrap import Bootstrap
 
 app = Flask(__name__)
 app.config.update(
@@ -11,7 +12,7 @@ app.config.update(
         SECRET_KEY="powerful-secretkey",
         WTF_CSRF_SECRET_KEY="a-csrf-secret-key",
         SQLALCHEMY_TRACK_MODIFICATIONS=False,
-        SQLALCHEMY_DATABASE_URI="mysql+mysqlconnector://{0}:{1}@{2}:{3}/{4}".format('root', 'myivan', 'localhost', '3306', 'ecg_db')
+        SQLALCHEMY_DATABASE_URI="mysql+pymysql://{0}:{1}@{2}:{3}/{4}".format('root', 'myivan', 'localhost', '3306', 'ecg_db')
     )
 )
 # sslify = SSLify(app)
@@ -21,7 +22,7 @@ migrate = Migrate(app, db)
 
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
-
+bootstrap = Bootstrap(app)
 
 from app import routes
 from app import api
